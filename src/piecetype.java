@@ -1,4 +1,4 @@
-public enum piecetype {
+public enum PieceType {
     PAWN,
     KNIGHT,
     BISHOP,

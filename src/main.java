@@ -1,4 +1,4 @@
-public class main {
-    board board = new board();
+public class Main {
+    Board board = new Board();
 
 }

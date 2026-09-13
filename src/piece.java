@@ -1,9 +1,15 @@
-public class piece {
-    colour colour;
-    piecetype type;
+public class Piece {
+    Colour colour;
+    PieceType type;
 
-    public piece(colour colour, piecetype type){
+    public Piece(Colour colour, PieceType type){
         this.colour = colour;
         this.type = type;
+    }
+    public Colour getColour(){
+        return colour;
+    }
+    public PieceType getPieceType(){
+        return type;
     }
 }

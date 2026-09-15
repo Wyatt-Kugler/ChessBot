@@ -7,6 +7,7 @@ public class MoveGenerator {
     }
 
     public List<Move> generateKnightMoves(Board board, int row, int col) {
+
         List<Move> moves = new ArrayList<Move>();
         int[][] knightMoves = {
             {-2, -1},
@@ -43,6 +44,41 @@ public class MoveGenerator {
 
         }
         return moves;
+
+    }
+    public List<Move> generateBishopMoves(Board board, int row, int col){
+        List<Move> moves = new ArrayList<Move>();
+        int[][] directions = {
+        {1, 1},
+        {1, -1},
+        {-1, 1},
+        {-1, -1}
+    };
+        for (int[] direction : directions) {
+            int increment = 0;
+            while (true) {
+                increment++;
+                int tempRow = row + direction[0] * increment;
+                int tempCol = col + direction[1] * increment;
+
+                if (!board.isInside(tempRow, tempCol)) {
+                    break;
+                }
+
+                Piece targetPiece = board.getPiece(tempRow, tempCol);
+
+                if (targetPiece == null) {
+                    moves.add(new Move(row, col, tempRow, tempCol));
+                }
+                else if (targetPiece.getColour() == board.getPiece(row, col).getColour()) {
+                    break;
+                }
+                else {
+                    moves.add(new Move(row, col, tempRow, tempCol));
+                    break;
+                }
+            }
+        }
 
     }
 }

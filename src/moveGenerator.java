@@ -118,6 +118,7 @@ public class MoveGenerator {
     }
 
     public List<Move> generateQueenMoves(Board board, int row, int col){
+
         List<Move> moves = new ArrayList<Move>();
         int[][] directions = {
             {1, 1},
@@ -157,5 +158,47 @@ public class MoveGenerator {
         }
             return moves;
 
-    }}
+    }
+
+    public List<Move> generateKingMoves(Board board, int row, int col){
+        List<Move> moves = new ArrayList<Move>();
+
+        int[][] directions = {
+            {1, 1},
+            {1, -1},
+            {-1, 1},
+            {-1, -1},
+            {1, 0},
+            {-1,0},
+            {0, 1},
+            {0, -1}
+        };
+
+        for (int[] direction: directions){
+            int tempRow = row+direction[0];
+            int tempCol = col+direction[1];
+
+            if (!board.isInside(tempRow, tempCol)) {
+                    continue;
+                }
+
+                Piece targetPiece = board.getPiece(tempRow, tempCol);
+
+                if (targetPiece == null) {
+                    moves.add(new Move(row, col, tempRow, tempCol));
+                }
+                else if (targetPiece.getColour() == board.getPiece(row, col).getColour()) {
+                    continue;
+                }
+                else {
+                    moves.add(new Move(row, col, tempRow, tempCol));
+                    continue;
+                }
+            }
+        
+        return moves;
+        }
+    }
+
+
 

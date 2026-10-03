@@ -1,5 +1,6 @@
 public class Board {
     public Piece[][] board = new Piece[8][8];
+    Move lastMove;
 
     public Board() {
         setupBackRank(0, Colour.BLACK);
@@ -30,9 +31,16 @@ public class Board {
             board[row][column] = new Piece(colour, PieceType.PAWN);
         }
     }
-    public void makeMove(Move move){
+    private void makeMove(Move move){
         board[move.getToRow()][move.getToCol()] = board[move.getFromRow()][move.getFromCol()];
+        lastMove = move;
     }
+
+    public Move getLastMove(){
+        return lastMove;
+    }
+
+
 
     // check if position is within chess board
     public boolean isInside(int row, int col) {

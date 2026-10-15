@@ -36,6 +36,11 @@ public class Board {
         lastMove = move;
     }
 
+    public void makeTempMove(Move move){
+        board[move.getToRow()][move.getToCol()] = board[move.getFromRow()][move.getFromCol()];
+        lastMove = move;
+    }
+
     public Move getLastMove(){
         return lastMove;
     }
@@ -54,6 +59,28 @@ public class Board {
             return false;
         }
         return true;
+    }
+    public int[] findWhiteKing(){
+        for (int i=0; i<8;i++){
+            for(int j = 0; j<8; j++){
+                Piece piece = getPiece(i, j);
+                if(piece != null && piece.getPieceType() == PieceType.KING
+                        && piece.getColour() == Colour.WHITE)
+                    return new int[]{i, j};
+            }
+        }
+        return null;
+    }
+    public int[] findBlackKing(){
+        for (int i=0; i<8;i++){
+            for(int j = 0; j<8; j++){
+                Piece piece = getPiece(i, j);
+                if(piece != null && piece.getPieceType() == PieceType.KING
+                        && piece.getColour() == Colour.BLACK)
+                    return new int[]{i, j};
+            }
+        }
+        return null;
     }
 
     // Returns piece at position, else null

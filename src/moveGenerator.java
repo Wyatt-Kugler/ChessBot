@@ -2,7 +2,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MoveGenerator {
-    public List<Move> generatePsuedoLegalMoves(Board board, Colour colour){
+    public List<Move> generatePseudoLegalMoves(Board board, Colour colour) {
         List<Move> moves = new ArrayList<>();
         for (int row = 0; row<8; row++){
             for (int col = 0; col<8; col++){
@@ -11,29 +11,46 @@ public class MoveGenerator {
                     continue;
                 }
 
-                switch (piece.getPieceType()) {
-                    case PAWN:
-                        moves.addAll(generatePawnMoves(board, row, col));
-                        break;
-                    case KNIGHT:
-                        moves.addAll(generateKnightMoves(board, row, col));
-                        break;
-                    case BISHOP:
-                        moves.addAll(generateBishopMoves(board, row, col));
-                        break;
-                    case ROOK:
-                        moves.addAll(generateRookMoves(board, row, col));
-                        break;
-                    case QUEEN:
-                        moves.addAll(generateQueenMoves(board, row, col));
-                        break;
-                    case KING:
-                        moves.addAll(generateKingMoves(board, row, col));
-                        break;
-                    default:
-                        break;
-                }
+                moves.addAll(generateMovesForPiece(board, row, col, colour));
             }
+        }
+        return moves;
+    }
+
+    @Deprecated
+    public List<Move> generatePsuedoLegalMoves(Board board, Colour colour) {
+        return generatePseudoLegalMoves(board, colour);
+    }
+
+    private List<Move> generateMovesForPiece(Board board, int row, int col,
+            Colour colour) {
+        List<Move> moves = new ArrayList<>();
+        Piece piece = board.getPiece(row, col);
+        if (piece == null || piece.getColour() != colour) {
+            return moves;
+        }
+
+        switch (piece.getPieceType()) {
+            case PAWN:
+                moves.addAll(generatePawnMoves(board, row, col));
+                break;
+            case KNIGHT:
+                moves.addAll(generateKnightMoves(board, row, col));
+                break;
+            case BISHOP:
+                moves.addAll(generateBishopMoves(board, row, col));
+                break;
+            case ROOK:
+                moves.addAll(generateRookMoves(board, row, col));
+                break;
+            case QUEEN:
+                moves.addAll(generateQueenMoves(board, row, col));
+                break;
+            case KING:
+                moves.addAll(generateKingMoves(board, row, col));
+                break;
+            default:
+                break;
         }
         return moves;
     }
@@ -420,5 +437,18 @@ public class MoveGenerator {
             col += colStep;
         }
         return true;
+    }
+
+    public List<Move> generateLegalMoves(Board board, Colour colour) {
+        List<Move> pseudoLegalMoves = generatePseudoLegalMoves(board, colour);
+        List<Move> legalMoves = new ArrayList<>();
+
+        for (Move move : pseudoLegalMoves) {
+            if (isLegal(board, move)) {
+                legalMoves.add(move);
+            }
+        }
+
+        return legalMoves;
     }
 }

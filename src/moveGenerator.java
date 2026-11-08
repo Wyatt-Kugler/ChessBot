@@ -297,7 +297,7 @@ public class MoveGenerator {
 
     // Determines if Psuedo Legal move is fully legal
     // Ie Doesn't leave king in check.
-    public boolean isLegal(Board board, Move move){
+    public static boolean isLegal(Board board, Move move){
         if (board == null || move == null
                 || !board.isInside(move.getFromRow(), move.getFromCol())
                 || !board.isInside(move.getToRow(), move.getToCol())) {

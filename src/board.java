@@ -31,7 +31,7 @@ public class Board {
             board[row][column] = new Piece(colour, PieceType.PAWN);
         }
     }
-    private void makeMove(Move move){
+    public void makeMove(Move move){
         board[move.getToRow()][move.getToCol()] = board[move.getFromRow()][move.getFromCol()];
         lastMove = move;
     }

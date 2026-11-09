@@ -2,6 +2,8 @@ import java.util.Random;
 import java.util.List;
 import java.util.Scanner;
 public class botLevel1 {
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
         // Initialize the game
         Board board = new Board();
@@ -17,6 +19,7 @@ public class botLevel1 {
             botColour = Colour.WHITE;
             playerColour = Colour.BLACK;
             Move move = chooseMove(board, botColour, moveGenerator);
+            System.out.println("Bot plays: " + chessUtil.coordinatesToPosition(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol()));
             board.makeMove(move);
             
         } else {
@@ -28,6 +31,10 @@ public class botLevel1 {
         while (true) {
             // Player's turn
             Move playerMove = getPlayerMove(board, playerColour);
+            if (!MoveGenerator.isPlayerMoveLegal(board, playerMove, playerColour)) {
+                System.out.println("Illegal move. Please try again.");
+                continue;
+            }
             board.makeMove(playerMove);
 
             // Bot's turn
@@ -36,6 +43,7 @@ public class botLevel1 {
                 System.out.println("Bot has no legal moves. Game over.");
                 break;
             }
+            System.out.println("Bot plays: " + chessUtil.coordinatesToPosition(botMove.getFromRow(), botMove.getFromCol(), botMove.getToRow(), botMove.getToCol()));
             board.makeMove(botMove);
         }
 
@@ -55,7 +63,6 @@ public class botLevel1 {
     }
     public static Move getPlayerMove(Board board, Colour playerColour) {
         while (true){
-            Scanner scanner = new Scanner(System.in);
             System.out.println("Enter move (e.g., e2e4): ");
             String moveStr = scanner.nextLine();
             if (moveStr.length() != 4) {
@@ -68,10 +75,8 @@ public class botLevel1 {
             Move move = new Move(coords[0], coords[1], coords[2], coords[3]);
             if (!MoveGenerator.isLegal(board, move)) {
                 System.out.println("Illegal move. Please try again.");
-                scanner.close();
                 continue;
             }
-            scanner.close();
             return new Move(coords[0], coords[1], coords[2], coords[3]);
         }
         

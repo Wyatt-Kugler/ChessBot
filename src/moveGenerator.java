@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MoveGenerator {
     public List<Move> generatePseudoLegalMoves(Board board, Colour colour) {
@@ -282,7 +283,7 @@ public class MoveGenerator {
         return moves;
     }
 
-    private boolean canCaptureEnPassant(Board board, Piece pawn, int row, int adjacentCol) {
+    private static boolean canCaptureEnPassant(Board board, Piece pawn, int row, int adjacentCol) {
         Move lastMove = board.getLastMove();
         if (lastMove == null || lastMove.getToRow() != row || lastMove.getToCol() != adjacentCol
                 || lastMove.getFromCol() != adjacentCol
@@ -359,12 +360,62 @@ public class MoveGenerator {
             board.lastMove = previousLastMove;
         }
     }
+    public static boolean isPlayerMoveLegal(Board board, Move move, Colour playerColour) {
+        if (board == null || move == null
+                || !board.isInside(move.getFromRow(), move.getFromCol())
+                || !board.isInside(move.getToRow(), move.getToCol())) {
+            return false;
+        }
 
-    private Colour oppositeColour(Colour colour) {
+        Piece movingPiece = board.getPiece(move.getFromRow(), move.getFromCol());
+        if (movingPiece == null || movingPiece.getColour() != playerColour) {
+            return false;
+        }
+
+        Piece destinationPiece = board.getPiece(move.getToRow(), move.getToCol());
+        if (destinationPiece != null
+                && destinationPiece.getColour() == movingPiece.getColour()) {
+            return false;
+        }
+        if (destinationPiece != null && destinationPiece.getPieceType() == PieceType.KING) {
+            return false;
+        }
+        List<Move> pieceMoves = new ArrayList<>();
+        switch (movingPiece.getPieceType()) {
+            case PAWN:
+                pieceMoves = new MoveGenerator().generatePawnMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            case KNIGHT:
+                pieceMoves = new MoveGenerator().generateKnightMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            case BISHOP:
+                pieceMoves = new MoveGenerator().generateBishopMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            case ROOK:
+                pieceMoves = new MoveGenerator().generateRookMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            case QUEEN:
+                pieceMoves = new MoveGenerator().generateQueenMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            case KING:
+                pieceMoves = new MoveGenerator().generateKingMoves(board, move.getFromRow(), move.getFromCol());
+                break;
+            default:
+                return false;
+        }
+        java.util.Set<Move> legalMovesSet = new java.util.HashSet<>(pieceMoves);
+        if (!legalMovesSet.contains(move)) {
+            return false;
+        }
+
+        return isLegal(board, move);
+    }
+
+    private static Colour oppositeColour(Colour colour) {
         return colour == Colour.WHITE ? Colour.BLACK : Colour.WHITE;
     }
 
-    private boolean isSquareAttacked(Board board, int row, int col, Colour attackingColour) {
+    private static boolean isSquareAttacked(Board board, int row, int col, Colour attackingColour) {
         for (int sourceRow = 0; sourceRow < 8; sourceRow++) {
             for (int sourceCol = 0; sourceCol < 8; sourceCol++) {
                 Piece piece = board.getPiece(sourceRow, sourceCol);
@@ -422,7 +473,7 @@ public class MoveGenerator {
         return false;
     }
 
-    private boolean isClearPath(Board board, int fromRow, int fromCol,
+    private static boolean isClearPath(Board board, int fromRow, int fromCol,
             int toRow, int toCol) {
         int rowStep = Integer.compare(toRow, fromRow);
         int colStep = Integer.compare(toCol, fromCol);

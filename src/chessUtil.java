@@ -20,4 +20,17 @@ public class chessUtil {
 
         return new int[]{startRow, startCol, endRow, endCol};
     }
+    public static String coordinatesToPosition(int startRow, int startCol, int endRow, int endCol) {
+        if (startRow < 0 || startRow > 7 || startCol < 0 || startCol > 7 ||
+            endRow < 0 || endRow > 7 || endCol < 0 || endCol > 7) {
+            throw new IllegalArgumentException("Coordinates out of bounds");
+        }
+
+        char fromrow = (char) ('a' + startCol);
+        char fromcol = (char) ('8' - startRow);
+        char torow = (char) ('a' + endCol);
+        char tocol = (char) ('8' - endRow);
+
+        return "" + fromrow + fromcol + torow + tocol;
+    }
 }

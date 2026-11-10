@@ -12,4 +12,30 @@ public class Piece {
     public PieceType getPieceType(){
         return type;
     }
+    public char getPieceChar() {
+        char pieceChar;
+        switch (type) {
+            case PAWN:
+                pieceChar = 'P';
+                break;
+            case ROOK:
+                pieceChar = 'R';
+                break;
+            case KNIGHT:
+                pieceChar = 'N';
+                break;
+            case BISHOP:
+                pieceChar = 'B';
+                break;
+            case QUEEN:
+                pieceChar = 'Q';
+                break;
+            case KING:
+                pieceChar = 'K';
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid piece type: " + type);
+        }
+        return pieceChar;
+    }
 }

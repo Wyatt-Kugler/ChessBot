@@ -32,7 +32,26 @@ public class Board {
         }
     }
     public void makeMove(Move move){
-        board[move.getToRow()][move.getToCol()] = board[move.getFromRow()][move.getFromCol()];
+        Piece movingPiece = board[move.getFromRow()][move.getFromCol()];
+        Piece destinationPiece = board[move.getToRow()][move.getToCol()];
+
+        // En passant captures the opposing pawn beside the moving pawn.
+        if (movingPiece != null && movingPiece.getPieceType() == PieceType.PAWN
+                && move.getFromCol() != move.getToCol() && destinationPiece == null
+                && lastMove != null
+                && lastMove.getToRow() == move.getFromRow()
+                && lastMove.getToCol() == move.getToCol()
+                && lastMove.getFromCol() == move.getToCol()
+                && Math.abs(lastMove.getFromRow() - lastMove.getToRow()) == 2) {
+            Piece adjacentPiece = board[move.getFromRow()][move.getToCol()];
+            if (adjacentPiece != null && adjacentPiece.getPieceType() == PieceType.PAWN
+                    && adjacentPiece.getColour() != movingPiece.getColour()) {
+                board[move.getFromRow()][move.getToCol()] = null;
+            }
+        }
+
+        board[move.getToRow()][move.getToCol()] = movingPiece;
+        board[move.getFromRow()][move.getFromCol()] = null;
         lastMove = move;
     }
 
@@ -93,5 +112,22 @@ public class Board {
         }
         return board[row][col];
 
+    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece piece = board[row][col];
+                if (piece == null) {
+                    sb.append(".");
+                } else {
+                    char pieceChar = piece.getPieceChar();
+                    sb.append(pieceChar);
+                }
+                sb.append(" ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

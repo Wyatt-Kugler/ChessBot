@@ -310,6 +310,10 @@ public class MoveGenerator {
             return false;
         }
 
+        if (!isPseudoLegalMove(board, move, movingPiece)) {
+            return false;
+        }
+
         Piece destinationPiece = board.getPiece(move.getToRow(), move.getToCol());
         if (destinationPiece != null
                 && destinationPiece.getColour() == movingPiece.getColour()) {
@@ -380,7 +384,15 @@ public class MoveGenerator {
         if (destinationPiece != null && destinationPiece.getPieceType() == PieceType.KING) {
             return false;
         }
-        List<Move> pieceMoves = new ArrayList<>();
+        if (!isPseudoLegalMove(board, move, movingPiece)) {
+            return false;
+        }
+
+        return isLegal(board, move);
+    }
+
+    private static boolean isPseudoLegalMove(Board board, Move move, Piece movingPiece) {
+        List<Move> pieceMoves;
         switch (movingPiece.getPieceType()) {
             case PAWN:
                 pieceMoves = generatePawnMoves(board, move.getFromRow(), move.getFromCol());
@@ -403,20 +415,16 @@ public class MoveGenerator {
             default:
                 return false;
         }
-        java.util.Set<Move> legalMovesSet = new java.util.HashSet<>(pieceMoves);
-        boolean isMoveInSet = false;
-        for (Move m : legalMovesSet) {
-            if (m.equals(move, board)) {
-                isMoveInSet = true;
-                break;
+
+        for (Move candidate : pieceMoves) {
+            if (candidate.getFromRow() == move.getFromRow()
+                    && candidate.getFromCol() == move.getFromCol()
+                    && candidate.getToRow() == move.getToRow()
+                    && candidate.getToCol() == move.getToCol()) {
+                return true;
             }
         }
-        if (!isMoveInSet) {
-            return false;
-        }
-        
-
-        return isLegal(board, move);
+        return false;
     }
 
     private static Colour oppositeColour(Colour colour) {

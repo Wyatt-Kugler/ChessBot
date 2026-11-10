@@ -8,7 +8,7 @@ public class botLevel1 {
         // Initialize the game
         Board board = new Board();
         Random random = new Random();
-        MoveGenerator moveGenerator = new MoveGenerator();
+        
 
         int randInt = random.nextInt(2);
         Colour botColour;
@@ -18,7 +18,7 @@ public class botLevel1 {
             System.out.println("Bot plays as White");
             botColour = Colour.WHITE;
             playerColour = Colour.BLACK;
-            Move move = chooseMove(board, botColour, moveGenerator);
+            Move move = chooseMove(board, botColour);
             System.out.println("Bot plays: " + chessUtil.coordinatesToPosition(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol()));
             board.makeMove(move);
             
@@ -38,7 +38,7 @@ public class botLevel1 {
             board.makeMove(playerMove);
 
             // Bot's turn
-            Move botMove = chooseMove(board, botColour, moveGenerator);
+            Move botMove = chooseMove(board, botColour);
             if (botMove == null) {
                 System.out.println("Bot has no legal moves. Game over.");
                 break;
@@ -51,10 +51,10 @@ public class botLevel1 {
 
 
     }
-    public static Move chooseMove(Board board, Colour botColour, MoveGenerator moveGenerator) {
+    public static Move chooseMove(Board board, Colour botColour) {
         Random random = new Random();
 
-        List<Move> possibleMoves = moveGenerator.generateLegalMoves(board, botColour);
+        List<Move> possibleMoves = MoveGenerator.generateLegalMoves(board, botColour);
         if (possibleMoves.isEmpty()) {
             return null;
         }
@@ -74,6 +74,10 @@ public class botLevel1 {
             int[] coords = chessUtil.positionToCoordinates(currentPos + newPos);
             Move move = new Move(coords[0], coords[1], coords[2], coords[3]);
             if (!MoveGenerator.isLegal(board, move)) {
+                System.out.println("Illegal move. Please try again.");
+                continue;
+            }
+            if (!MoveGenerator.isPlayerMoveLegal(board, move, playerColour)) {
                 System.out.println("Illegal move. Please try again.");
                 continue;
             }

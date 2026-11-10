@@ -31,7 +31,7 @@ public class botLevel1 {
         while (true) {
             // Player's turn
             Move playerMove = getPlayerMove(board, playerColour);
-            if (!MoveGenerator.isPlayerMoveLegal(board, playerMove, playerColour)) {
+            if (!MoveGenerator.isLegal(board, playerMove)) {
                 System.out.println("Illegal move. Please try again.");
                 continue;
             }

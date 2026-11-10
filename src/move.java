@@ -24,6 +24,33 @@ public class Move {
     public int getToCol() {
         return toCol;
     }
+    @Override 
+    public String toString() {
+        String moveString = chessUtil.coordinatesToPosition(fromRow, fromCol, toRow, toCol);
+        return moveString;
+    }
+    
+    public boolean equals(Object obj, Board board) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Move other = (Move) obj;
+        Piece thisPiece = board.getPiece(fromRow, fromCol);
+        Piece otherPiece = board.getPiece(other.fromRow, other.fromCol);
+        
+        if (thisPiece == null || otherPiece == null) {
+            return false;
+        }
+        if (thisPiece.getPieceType() != otherPiece.getPieceType()) {
+            return false;
+        }
+        
+        return fromRow == other.fromRow && fromCol == other.fromCol &&
+               toRow == other.toRow && toCol == other.toCol;
+    }
 
     
 }

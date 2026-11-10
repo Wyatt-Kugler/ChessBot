@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class MoveGenerator {
-    public List<Move> generatePseudoLegalMoves(Board board, Colour colour) {
+    public static List<Move> generatePseudoLegalMoves(Board board, Colour colour) {
         List<Move> moves = new ArrayList<>();
         for (int row = 0; row<8; row++){
             for (int col = 0; col<8; col++){
@@ -23,7 +23,7 @@ public class MoveGenerator {
         return generatePseudoLegalMoves(board, colour);
     }
 
-    private List<Move> generateMovesForPiece(Board board, int row, int col,
+    private static List<Move> generateMovesForPiece(Board board, int row, int col,
             Colour colour) {
         List<Move> moves = new ArrayList<>();
         Piece piece = board.getPiece(row, col);
@@ -56,7 +56,7 @@ public class MoveGenerator {
         return moves;
     }
 
-    public List<Move> generateKnightMoves(Board board, int row, int col) {
+    public static List<Move> generateKnightMoves(Board board, int row, int col) {
 
         List<Move> moves = new ArrayList<Move>();
         int[][] knightMoves = {
@@ -96,7 +96,7 @@ public class MoveGenerator {
         return moves;
 
     }
-    public List<Move> generateBishopMoves(Board board, int row, int col){
+    public static List<Move> generateBishopMoves(Board board, int row, int col){
         List<Move> moves = new ArrayList<Move>();
         int[][] directions = {
         {1, 1},
@@ -131,7 +131,7 @@ public class MoveGenerator {
         }
             return moves;
     }
-    public List<Move> generateRookMoves(Board board, int row, int col){
+    public static List<Move> generateRookMoves(Board board, int row, int col){
         List<Move> moves = new ArrayList<Move>();
         int[][] directions = {
         {1, 0},
@@ -167,7 +167,7 @@ public class MoveGenerator {
             return moves;
     }
 
-    public List<Move> generateQueenMoves(Board board, int row, int col){
+    public static List<Move> generateQueenMoves(Board board, int row, int col){
 
         List<Move> moves = new ArrayList<Move>();
         int[][] directions = {
@@ -210,7 +210,7 @@ public class MoveGenerator {
 
     }
 
-    public List<Move> generateKingMoves(Board board, int row, int col){
+    public static List<Move> generateKingMoves(Board board, int row, int col){
         List<Move> moves = new ArrayList<Move>();
 
         int[][] directions = {
@@ -248,7 +248,7 @@ public class MoveGenerator {
         
         return moves;
         }
-    public List<Move> generatePawnMoves(Board board, int row, int col) {
+    public static List<Move> generatePawnMoves(Board board, int row, int col) {
         List<Move> moves = new ArrayList<Move>();
         Piece pawn = board.getPiece(row, col);
         if (pawn == null || pawn.getPieceType() != PieceType.PAWN) {
@@ -383,30 +383,38 @@ public class MoveGenerator {
         List<Move> pieceMoves = new ArrayList<>();
         switch (movingPiece.getPieceType()) {
             case PAWN:
-                pieceMoves = new MoveGenerator().generatePawnMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generatePawnMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             case KNIGHT:
-                pieceMoves = new MoveGenerator().generateKnightMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generateKnightMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             case BISHOP:
-                pieceMoves = new MoveGenerator().generateBishopMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generateBishopMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             case ROOK:
-                pieceMoves = new MoveGenerator().generateRookMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generateRookMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             case QUEEN:
-                pieceMoves = new MoveGenerator().generateQueenMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generateQueenMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             case KING:
-                pieceMoves = new MoveGenerator().generateKingMoves(board, move.getFromRow(), move.getFromCol());
+                pieceMoves = generateKingMoves(board, move.getFromRow(), move.getFromCol());
                 break;
             default:
                 return false;
         }
         java.util.Set<Move> legalMovesSet = new java.util.HashSet<>(pieceMoves);
-        if (!legalMovesSet.contains(move)) {
+        boolean isMoveInSet = false;
+        for (Move m : legalMovesSet) {
+            if (m.equals(move, board)) {
+                isMoveInSet = true;
+                break;
+            }
+        }
+        if (!isMoveInSet) {
             return false;
         }
+        
 
         return isLegal(board, move);
     }
@@ -490,7 +498,7 @@ public class MoveGenerator {
         return true;
     }
 
-    public List<Move> generateLegalMoves(Board board, Colour colour) {
+    public static List<Move> generateLegalMoves(Board board, Colour colour) {
         List<Move> pseudoLegalMoves = generatePseudoLegalMoves(board, colour);
         List<Move> legalMoves = new ArrayList<>();
 
@@ -502,4 +510,18 @@ public class MoveGenerator {
 
         return legalMoves;
     }
+    public static void testIsPlayerMoveLegal(){
+        Board board = new Board();
+        List<Move> legalMoves = generateLegalMoves(board, Colour.WHITE);
+        for (Move move : legalMoves) {
+            if (!isPlayerMoveLegal(board, move, Colour.WHITE)) {
+                System.out.println("Error: Legal move not recognized as legal: " + move);
+            }
+        }
 }
+    public static void main(String[] args) {
+        testIsPlayerMoveLegal();
+    }
+}
+
+

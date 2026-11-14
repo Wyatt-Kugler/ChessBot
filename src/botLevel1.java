@@ -35,6 +35,30 @@ public class botLevel1 {
                 System.out.println("Illegal move. Please try again.");
                 continue;
             }
+            
+            if (isPlayerPromotingPawn(board, playerMove, playerColour)) {
+                System.out.println("You are promoting a pawn! Please choose a piece to promote to (Q, R, B, N): ");
+                String promotionChoice = scanner.nextLine().toUpperCase();
+                PieceType promotionType;
+                switch (promotionChoice) {
+                    case "Q":
+                        promotionType = PieceType.QUEEN;
+                        break;
+                    case "R":
+                        promotionType = PieceType.ROOK;
+                        break;
+                    case "B":
+                        promotionType = PieceType.BISHOP;
+                        break;
+                    case "N":
+                        promotionType = PieceType.KNIGHT;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Defaulting to Queen.");
+                        promotionType = PieceType.QUEEN;
+                }
+                playerMove = new Move(playerMove.getFromRow(), playerMove.getFromCol(), playerMove.getToRow(), playerMove.getToCol(), promotionType);
+            }
             board.makeMove(playerMove);
 
             // Bot's turn
@@ -61,10 +85,25 @@ public class botLevel1 {
         return possibleMoves.get(random.nextInt(possibleMoves.size()));
         
     }
+
+    private static boolean isPlayerPromotingPawn(Board board, Move move, Colour playerColour) {
+        Piece piece = board.getPiece(move.getFromRow(), move.getFromCol());
+        if (piece == null || piece.getPieceType() != PieceType.PAWN || piece.getColour() != playerColour) {
+            return false;
+        }
+        if (playerColour == Colour.WHITE && move.getToRow() == 0) {
+            return true;
+        }
+        if (playerColour == Colour.BLACK && move.getToRow() == 7) {
+            return true;
+        }
+        return false;
+    }
     public static Move getPlayerMove(Board board, Colour playerColour) {
         while (true){
-            System.out.println("Enter move (e.g., e2e4): ");
+            System.out.println("Enter your move in the format 'e2e4' (from position to position): ");
             String moveStr = scanner.nextLine();
+            
             if (moveStr.length() != 4) {
                 System.out.println("Invalid move format. Please try again.");
                 continue;

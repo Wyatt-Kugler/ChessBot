@@ -34,6 +34,11 @@ public class Board {
     public void makeMove(Move move){
         Piece movingPiece = board[move.getFromRow()][move.getFromCol()];
         Piece destinationPiece = board[move.getToRow()][move.getToCol()];
+        if (move.getPromotion() != null
+                && (movingPiece == null || movingPiece.getPieceType() != PieceType.PAWN
+                || move.getToRow() != (movingPiece.getColour() == Colour.WHITE ? 0 : 7))) {
+            throw new IllegalArgumentException("Promotion must be a pawn move to the last rank");
+        }
 
         // En passant captures the opposing pawn beside the moving pawn.
         if (movingPiece != null && movingPiece.getPieceType() == PieceType.PAWN
@@ -52,6 +57,10 @@ public class Board {
 
         board[move.getToRow()][move.getToCol()] = movingPiece;
         board[move.getFromRow()][move.getFromCol()] = null;
+        if (move.getPromotion() != null) {
+            board[move.getToRow()][move.getToCol()] =
+                    new Piece(movingPiece.getColour(), move.getPromotion());
+        }
         lastMove = move;
     }
 

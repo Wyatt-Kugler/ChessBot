@@ -3,11 +3,19 @@ public class Move {
     private int fromCol;
     private int toRow;
     private int toCol;
+    private PieceType promotion;
     public Move(int fromRow, int fromCol, int toRow, int toCol){
+        this(fromRow, fromCol, toRow, toCol, null);
+    }
+    public Move(int fromRow, int fromCol, int toRow, int toCol, PieceType promotion){
         this.fromRow = fromRow;
         this.fromCol = fromCol;
         this.toRow = toRow;
         this.toCol = toCol;
+        if (promotion == PieceType.PAWN || promotion == PieceType.KING) {
+            throw new IllegalArgumentException("A pawn can only promote to a queen, rook, bishop, or knight");
+        }
+        this.promotion = promotion;
     }
     public int getFromRow() {
         return fromRow;
@@ -24,6 +32,7 @@ public class Move {
     public int getToCol() {
         return toCol;
     }
+    public PieceType getPromotion() { return promotion; }
     @Override 
     public String toString() {
         String moveString = chessUtil.coordinatesToPosition(fromRow, fromCol, toRow, toCol);
@@ -49,7 +58,7 @@ public class Move {
         }
         
         return fromRow == other.fromRow && fromCol == other.fromCol &&
-               toRow == other.toRow && toCol == other.toCol;
+               toRow == other.toRow && toCol == other.toCol && promotion == other.promotion;
     }
 
     

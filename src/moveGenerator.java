@@ -261,7 +261,7 @@ public class MoveGenerator {
         int nextRow = row + direction;
 
         if (board.isInside(nextRow, col) && board.getPiece(nextRow, col) == null) {
-            moves.add(new Move(row, col, nextRow, col));
+            addPawnMove(moves, row, col, nextRow, col, colour);
             int doubleRow = row + 2 * direction;
             if (row == startingRow && board.getPiece(doubleRow, col) == null) {
                 moves.add(new Move(row, col, doubleRow, col));
@@ -275,12 +275,25 @@ public class MoveGenerator {
             }
             Piece target = board.getPiece(nextRow, targetCol);
             if (target != null && target.getColour() != colour) {
-                moves.add(new Move(row, col, nextRow, targetCol));
+                addPawnMove(moves, row, col, nextRow, targetCol, colour);
             } else if (target == null && canCaptureEnPassant(board, pawn, row, targetCol)) {
                 moves.add(new Move(row, col, nextRow, targetCol));
             }
         }
         return moves;
+    }
+
+    private static void addPawnMove(List<Move> moves, int fromRow, int fromCol,
+            int toRow, int toCol, Colour colour) {
+        int lastRank = colour == Colour.WHITE ? 0 : 7;
+        if (toRow == lastRank) {
+            moves.add(new Move(fromRow, fromCol, toRow, toCol, PieceType.QUEEN));
+            moves.add(new Move(fromRow, fromCol, toRow, toCol, PieceType.ROOK));
+            moves.add(new Move(fromRow, fromCol, toRow, toCol, PieceType.BISHOP));
+            moves.add(new Move(fromRow, fromCol, toRow, toCol, PieceType.KNIGHT));
+        } else {
+            moves.add(new Move(fromRow, fromCol, toRow, toCol));
+        }
     }
 
     private static boolean canCaptureEnPassant(Board board, Piece pawn, int row, int adjacentCol) {
@@ -420,7 +433,8 @@ public class MoveGenerator {
             if (candidate.getFromRow() == move.getFromRow()
                     && candidate.getFromCol() == move.getFromCol()
                     && candidate.getToRow() == move.getToRow()
-                    && candidate.getToCol() == move.getToCol()) {
+                    && candidate.getToCol() == move.getToCol()
+                    && candidate.getPromotion() == move.getPromotion()) {
                 return true;
             }
         }
